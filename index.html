@@ -6,48 +6,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Typescript lesson</title>
-    <style>
-        * {
-            font-size: 25px;
-        }
-
-        input {
-            width: 400px;
-            height: 50px;
-        }
-
-        button {
-            width: 100px;
-            height: 50px;
-            background-color: orange;
-        }
-    </style>
+    <link rel="stylesheet" href="app.css" />
 </head>
 
 <body>
-    <!-- <input type='number' id="num1" placeholder='number1'>
-    <input type='number' id="num2" placeholder='number2'>
-    <button onclick="total()">Add</button> -->
+    
+    <template id="project-input">
+        <form>
+            <div class="form-control">
+                <label for="title">Title</label>
+                <input type="text" id="title" />
+            </div>
+            <div class="form-control">
+                <label for="description">Description</label>
+                <textarea id="description" rows="3"></textarea>
+            </div>
+            <div class="form-control">
+                <label for="people">People</label>
+                <input type="number" id="people" step="1" min="0" max="10" />
+            </div>
+            <button type="submit">ADD PROJECT</button>
+        </form>
+    </template>
+    
+    <template id="single-project">
+        <li></li>
+    </template>
+    
+    <template id="project-list">
+        <section class="projects">
+            <header>
+              <marquee><h2></h2></marquee>
+            </header>
+            <ul></ul>
+        </section>
+    </template>
+    
+    <div id="app"></div>
 
-    <!-- <p id="panelRoll"> Roll point 0 </p>
-    <p id="panelSave">Save point 0 </p>
-    <p id="panelWinner" style="display: none;">Winner!!!!</p>
 
-    <button id="roll">
-        Roll
-    </button>
-
-    <button id="save">
-        Save
-    </button>
-
-    <br>
-    <p id='totalNumber'> Total 0</p> -->
-
-    <h1>User Info:</h1>
-    <h2>No User</h2>
-
-    <script src='./src/app.js' defer></script>
+    <script type='module' src='./src/app.js' defer></script>
 </body>
 
 </html>

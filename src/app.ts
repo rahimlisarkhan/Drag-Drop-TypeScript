@@ -1,126 +1,94 @@
-// function Login (login:string) {
+//Auto bind decorator
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
 
-//     return function (constructor:Function) {
-//         console.log(login);
-//         console.log(constructor);
-//     }
+    // const originalMethod = descriptor.value
+    // const adjDescriptor: PropertyDescriptor = {
+    //     get(){
+    //         const boundFn = originalMethod.bind(this)
+    //         return boundFn;
+    //     }
+    // }
+    // return adjDescriptor;
 
-// }
-
-
-
-// @Login('PERSON-LOGIN')
-// class Pers{
-//     name:string = 'Max';
-
-//     constructor(){
-//         console.log('Person Created....');
-//     }
-// }
-
-
-// let pers = new Pers()
-
-// // console.log(pers);
-
-
-//Lesson 2 Decorator
-
-//decorator
-// function writeText<T extends string>(template: T, hookID: T) {
-
-//     return function (constructor: any) {
-//         let hookEl = document.querySelector(hookID)
-//         let hookParg = document.querySelector('h2')
-
-//         let info = new constructor()
-
-//         if (hookEl && hookParg) {
-//             hookEl.innerHTML = template
-//             hookParg.innerHTML = info.name
-//         }
-//     }
-
-// }
-
-
-
-// @writeText('Welcome User Back','h1')
-// class personUser {
-//     name: string = 'Max';
-//     age: number = 4;
-
-//     constructor() {
-//         console.log('userCreated');
-//     }
-// }
-
-// function Log(target:any,prName:string | Symbol){
-//     console.log('Propety decorator');
-//     // return function(constructor:any){
-//     //     console.log(constructor());
-//     // }
-
-//     console.log(target,prName);
-    
-// }
- 
-
-// class Product {
-//     title: string;
-//     private _price: number;
-
-//     constructor(t: string, p: number) {
-//         this.title = t;
-//         this._price = p
-//     }
-//     set Price(val: number) {
-//         if (val > 0) {
-//             this._price = val
-//         }
-//         else {
-//             throw new Error('Error value')
-//         }
-//     }
-
-//     @Log
-//     getPriceWithtax(tax:number){
-//         return this._price * (1 + tax)
-//     }
-// }
-
-// Lesson 5 
-//decorator
-
-
-function writeText<T extends string>(template: T, hookID: T) {
-
-    return function<T extends {new(...args:any[]):{name:string}} > (originalConstructor:T ) {
-
-        return class extends originalConstructor {
-            constructor(..._:any[]) { 
-                super();
-                let hookEl = document.querySelector(hookID)
-                let hookParg = document.querySelector('h2')
-
-
-                if (hookEl && hookParg) {
-                    hookEl.innerHTML = template
-                    hookParg.innerHTML = this.name
-                }
-            }
+    return <PropertyDescriptor>{
+        get() {
+            return descriptor.value.bind(this)
         }
     }
 }
 
+//Project Input Class
+class ProjectInput {
 
+    templateEl: HTMLTemplateElement;
+    hostEl: HTMLDivElement;
+    elementForm: HTMLFormElement;
+    titleElInput: HTMLInputElement;
+    descElInput: HTMLInputElement;
+    peopleElInput: HTMLInputElement;
 
-@writeText('Welcome User Back', 'h1')
-class personUser {
-    name: string = 'Max';
-    age: number = 4;
 
     constructor() {
-        console.log('userCreated');
+        this.templateEl = <HTMLTemplateElement>document.querySelector('#project-input');
+        this.hostEl = <HTMLDivElement>document.querySelector('#app');
+        const importNode = document.importNode(this.templateEl.content, true)
+        this.elementForm = <HTMLFormElement>importNode.firstElementChild;
+        this.elementForm.id = 'user-input'
+
+        this.titleElInput = <HTMLInputElement>this.elementForm.querySelector('#title');
+        this.descElInput = <HTMLInputElement>this.elementForm.querySelector('#description');
+        this.peopleElInput = <HTMLInputElement>this.elementForm.querySelector('#people');
+
+        this.configure()
+        this.attach()
+    }
+
+    private getherUserInput(): [string, string, number] | void {
+
+        if (
+            this.titleElInput.value.trim().length === 0 ||
+            this.descElInput.value.trim().length === 0 ||
+            this.peopleElInput.value.trim().length === 0
+        ) {
+            alert('Invalid value,Please try again')
+        } else {
+            return [
+                this.titleElInput.value,
+                this.descElInput.value,
+                +this.peopleElInput.value
+            ]
+        }
+
+    }
+
+    private clearInput(){
+        this.titleElInput.value='',
+        this.descElInput.value='',
+        this.peopleElInput.value=''
+    }
+
+    @autobind
+    private submitHandler(event: Event) {
+        event.preventDefault();
+        const userInput = this.getherUserInput()
+
+        if (Array.isArray(userInput)) {
+            const [name,desc,people] = userInput
+            console.log(name, desc,people);
+            this.clearInput()
+        }
+    }
+
+    private configure() {
+        this.elementForm.addEventListener('submit', this.submitHandler)
+    }
+
+    private attach() {
+        this.hostEl.insertAdjacentElement('afterbegin', this.elementForm)
     }
 }
+
+
+const prjInput = new ProjectInput()
+console.log(prjInput);
+
